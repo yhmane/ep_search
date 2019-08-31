@@ -88,7 +88,6 @@ public class IndexApiTest {
         String ALIAS_NAME = "moive_auto_alias";
         request.alias(new Alias(ALIAS_NAME));
 
-        // 인덱스 생성
         boolean acknowledged = client.indices()
                 .create(request, RequestOptions.DEFAULT)
                 .isAcknowledged();
@@ -119,7 +118,6 @@ public class IndexApiTest {
     @Test
     public void index_테스트4_삭제() throws IOException {
 
-        // 인덱스 삭제
         DeleteIndexRequest request = new DeleteIndexRequest(INDEX_NAME);
 
         boolean acknowledged = client.indices()
