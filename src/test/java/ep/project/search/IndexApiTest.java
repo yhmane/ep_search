@@ -2,14 +2,17 @@ package ep.project.search;
 
 import org.apache.http.HttpHost;
 import org.elasticsearch.action.admin.indices.alias.Alias;
+import org.elasticsearch.action.admin.indices.close.CloseIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.junit.*;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -26,10 +29,17 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class IndexApiTest {
 
     @Autowired
     private RestHighLevelClient client;
+
+    // Index명
+    private final String INDEX_NAME = "movie_rest";
+
+    // 타입명
+    private final String TYPE_NAME = "_doc";
 
     @Before
     public void connection_생성() {
@@ -44,13 +54,7 @@ public class IndexApiTest {
     }
 
     @Test
-    public void index_생성() throws IOException {
-
-        // Index명
-        String INDEX_NAME = "movie_rest";
-
-        // 타입명
-        String TYPE_NAME = "_doc";
+    public void index_테스트1_생성() throws IOException {
 
         // 매핑정보
         XContentBuilder indexBuilder = jsonBuilder()
@@ -93,10 +97,27 @@ public class IndexApiTest {
     }
 
     @Test
-    public void index_삭제() throws IOException {
-        // Index명
-        String INDEX_NAME = "movie_rest";
+    public void index_테스트2_닫기() throws IOException{
 
+        CloseIndexRequest requestClose = new CloseIndexRequest(INDEX_NAME);
+
+        boolean acknowledged  = client.indices().close(requestClose, RequestOptions.DEFAULT).isAcknowledged();
+
+        assertThat(acknowledged, is(true));
+    }
+
+    @Test
+    public void index_테스트3_오픈() throws IOException{
+
+        OpenIndexRequest requestOpen = new OpenIndexRequest(INDEX_NAME);
+
+        boolean acknowledged  = client.indices().open(requestOpen, RequestOptions.DEFAULT).isAcknowledged();
+
+        assertThat(acknowledged, is(true));
+    }
+
+    @Test
+    public void index_테스트4_삭제() throws IOException {
 
         // 인덱스 삭제
         DeleteIndexRequest request = new DeleteIndexRequest(INDEX_NAME);
@@ -104,6 +125,7 @@ public class IndexApiTest {
         boolean acknowledged = client.indices()
                 .delete(request, RequestOptions.DEFAULT)
                 .isAcknowledged();
+
         assertThat(acknowledged, is(true));
     }
 }
