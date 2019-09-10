@@ -12,13 +12,13 @@ import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.rest.RestStatus;
 
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -41,19 +41,24 @@ public class DocumentApiTest {
 
     @Autowired
     private RestHighLevelClient client;
-    // Index명
-    private final String INDEX_NAME = "movie_rest";
-    // 타입명
-    private final String TYPE_NAME = "_doc";
-    // 문서 키값
-    private final String ID = "1";
-
+    @Value("${elasticsearch.index}")
+    private String INDEX_NAME;
+    @Value("${elasticsearch.type}")
+    private String TYPE_NAME;
+    @Value("${elasticsearch.hostname}")
+    private String HOST_NAME;
+    @Value("${elasticsearch.port}")
+    private int PORT;
+    @Value("${elasticsearch.scheme}")
+    private String SCHEME;
+    // 아이디
+    private String ID = "1";
 
     @Before
     public void connection_생성() {
         client = new RestHighLevelClient(
                 RestClient.builder(
-                        new HttpHost("127.0.0.1", 9200, "http")));
+                        new HttpHost(HOST_NAME, PORT, SCHEME)));
     }
 
     @After
@@ -64,15 +69,15 @@ public class DocumentApiTest {
     @Test
     public void index_테스트1_insert() throws IOException {
 
-        IndexRequest request = new IndexRequest(INDEX_NAME,TYPE_NAME, ID);
-
-        request.source(jsonBuilder()
-                .startObject()
-                .field("movieCd", "20173732")
-                .field("movieNm", "살아남은 아이")
-                .field("movieNmEn", "Last Child")
-                .endObject()
-        );
+        IndexRequest request = new IndexRequest(INDEX_NAME,TYPE_NAME, ID)
+                .source(
+                    jsonBuilder()
+                        .startObject()
+                            .field("movieCd", "20173732")
+                            .field("movieNm", "살아남은 아이")
+                            .field("movieNmEn", "Last Child")
+                        .endObject()
+                );
 
 
         IndexResponse response = client.index(request, RequestOptions.DEFAULT);
@@ -104,14 +109,15 @@ public class DocumentApiTest {
     @Test
     public void index_테스트3_update() throws IOException {
 
-        XContentBuilder builder = jsonBuilder()
-                .startObject()
-                .field("createdAt", new Date())
-                .field("prdtYear", "2019")
-                .field("typeNm", "장편")
-                .endObject();
-
-        UpdateRequest request = new UpdateRequest(INDEX_NAME, TYPE_NAME, ID).doc(builder);
+        UpdateRequest request = new UpdateRequest(INDEX_NAME, TYPE_NAME, ID)
+                .doc(
+                    jsonBuilder()
+                        .startObject()
+                            .field("createdAt", new Date())
+                            .field("prdtYear", "2019")
+                            .field("typeNm", "장편")
+                        .endObject()
+                );
 
         UpdateResponse updateResponse = client.update(request, RequestOptions.DEFAULT);
         RestStatus status = updateResponse.status();

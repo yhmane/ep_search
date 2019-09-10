@@ -9,11 +9,12 @@ import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.settings.Settings;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -34,18 +35,24 @@ public class IndexApiTest {
 
     @Autowired
     private RestHighLevelClient client;
-
-    // Index명
-    private final String INDEX_NAME = "movie_rest";
-
-    // 타입명
-    private final String TYPE_NAME = "_doc";
+    @Value("${elasticsearch.index}")
+    private String INDEX_NAME;
+    @Value("${elasticsearch.type}")
+    private String TYPE_NAME;
+    @Value("${elasticsearch.hostname}")
+    private String HOST_NAME;
+    @Value("${elasticsearch.port}")
+    private int PORT;
+    @Value("${elasticsearch.scheme}")
+    private String SCHEME;
+    @Value("${elasticsearch.aliasname}")
+    private String ALIAS_NAME = "moive_auto_alias";
 
     @Before
     public void connection_생성() {
         client = new RestHighLevelClient(
                 RestClient.builder(
-                        new HttpHost("127.0.0.1", 9200, "http")));
+                        new HttpHost(HOST_NAME, PORT, SCHEME)));
     }
 
     @After
@@ -56,37 +63,36 @@ public class IndexApiTest {
     @Test
     public void index_테스트1_생성() throws IOException {
 
-        // 매핑정보
-        XContentBuilder indexBuilder = jsonBuilder()
-                .startObject()
-                .startObject(TYPE_NAME)
-                .startObject("properties")
-                .startObject("movieCd")
-                .field("type", "keyword")
-                .field("store", "true")
-                .field("index_options", "docs")
-                .endObject()
-                .startObject("movieNm")
-                .field("type", "text")
-                .field("store", "true")
-                .field("index_options", "docs")
-                .endObject()
-                .startObject("movieNmEn")
-                .field("type", "text")
-                .field("store", "true")
-                .field("index_options", "docs")
-                .endObject()
-                .endObject()
-                .endObject()
-                .endObject();
-
         // 매핑 설정
-        CreateIndexRequest request = new CreateIndexRequest(INDEX_NAME);
-        request.mapping(TYPE_NAME, indexBuilder);
-
-        // Alias 설정
-        String ALIAS_NAME = "moive_auto_alias";
-        request.alias(new Alias(ALIAS_NAME));
+        CreateIndexRequest request = new CreateIndexRequest()
+                .index(INDEX_NAME)
+                .mapping(TYPE_NAME, jsonBuilder()
+                        .startObject()
+                            .startObject(TYPE_NAME)
+                                .startObject("properties")
+                                    .startObject("movieCd")
+                                        .field("type", "keyword")
+                                        .field("store", "true")
+                                        .field("index_options", "docs")
+                                    .endObject()
+                                    .startObject("movieNm")
+                                        .field("type", "text")
+                                        .field("store", "true")
+                                        .field("index_options", "docs")
+                                    .endObject()
+                                    .startObject("movieNmEn")
+                                        .field("type", "text")
+                                        .field("store", "true")
+                                        .field("index_options", "docs")
+                                    .endObject()
+                                .endObject()
+                            .endObject()
+                        .endObject())
+                .settings(
+                        Settings.builder()
+                                .put("index.number_of_shards", 5)
+                                .put("index.number_of_replicas", 2))
+                .alias(new Alias(ALIAS_NAME));
 
         boolean acknowledged = client.indices()
                 .create(request, RequestOptions.DEFAULT)
