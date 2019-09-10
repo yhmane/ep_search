@@ -1,0 +1,16 @@
+spring:
+  profiles:
+    active: local
+
+# 기본 local
+---
+spring:
+  profiles: local
+
+elasticsearch:
+  index: movie_rest
+  type: _doc
+  hostname: 127.0.0.1
+  port: 9200
+  scheme: http
+  aliasname: moive_auto_alias
