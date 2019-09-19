@@ -81,12 +81,7 @@ public class SearchApiTest {
         SearchResponse response = client.search(request, RequestOptions.DEFAULT);;
         SearchHits searchHits = response.getHits();;
 
-        for( SearchHit hit : searchHits) {
-            Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-            String movieCd = (String) sourceAsMap.get("movieCd");
-            String movieNm = (String) sourceAsMap.get("movieNm");
-            String movieNmEn = (String) sourceAsMap.get("movieNmEn");
-        }
+        checkData(searchHits);
     }
 
     @Test
@@ -103,12 +98,7 @@ public class SearchApiTest {
         SearchResponse response = client.search(request, RequestOptions.DEFAULT);;
         SearchHits searchHits = response.getHits();;
 
-        for( SearchHit hit : searchHits) {
-            Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-            String movieCd = (String) sourceAsMap.get("movieCd");
-            String movieNm = (String) sourceAsMap.get("movieNm");
-            String movieNmEn = (String) sourceAsMap.get("movieNmEn");
-        }
+        checkData(searchHits);
     }
 
     @Test
@@ -125,12 +115,7 @@ public class SearchApiTest {
         SearchResponse response = client.search(request, RequestOptions.DEFAULT);;
         SearchHits searchHits = response.getHits();;
 
-        for( SearchHit hit : searchHits) {
-            Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-            String movieCd = (String) sourceAsMap.get("movieCd");
-            String movieNm = (String) sourceAsMap.get("movieNm");
-            String movieNmEn = (String) sourceAsMap.get("movieNmEn");
-        }
+        checkData(searchHits);
     }
 
     @Test
@@ -147,12 +132,7 @@ public class SearchApiTest {
         SearchResponse response = client.search(request, RequestOptions.DEFAULT);;
         SearchHits searchHits = response.getHits();;
 
-        for( SearchHit hit : searchHits) {
-            Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-            String movieCd = (String) sourceAsMap.get("movieCd");
-            String movieNm = (String) sourceAsMap.get("movieNm");
-            String movieNmEn = (String) sourceAsMap.get("movieNmEn");
-        }
+        checkData(searchHits);
     }
 
     @Test
@@ -169,12 +149,7 @@ public class SearchApiTest {
         SearchResponse response = client.search(request, RequestOptions.DEFAULT);;
         SearchHits searchHits = response.getHits();;
 
-        for( SearchHit hit : searchHits) {
-            Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-            String movieCd = (String) sourceAsMap.get("movieCd");
-            String movieNm = (String) sourceAsMap.get("movieNm");
-            String movieNmEn = (String) sourceAsMap.get("movieNmEn");
-        }
+        checkData(searchHits);
     }
 
     @Test
@@ -195,11 +170,19 @@ public class SearchApiTest {
         SearchResponse response = client.search(request, RequestOptions.DEFAULT);;
         SearchHits searchHits = response.getHits();;
 
-        for( SearchHit hit : searchHits) {
-            Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-            String movieCd = (String) sourceAsMap.get("movieCd");
-            String movieNm = (String) sourceAsMap.get("movieNm");
-            String movieNmEn = (String) sourceAsMap.get("movieNmEn");
-        }
+        checkData(searchHits);
+    }
+
+    public void checkData(SearchHits hits) {
+        SearchHit hit = hits.getAt(0);
+        Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+
+        String movieCd = (String) sourceAsMap.get("movieCd");
+        String movieNm = (String) sourceAsMap.get("movieNm");
+        String movieNmEn = (String) sourceAsMap.get("movieNmEn");
+
+        assertThat(movieCd,   is("20173732"));
+        assertThat(movieNm,   is("살아남은 아이"));
+        assertThat(movieNmEn, is("Last Child"));
     }
 }
