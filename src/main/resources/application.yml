@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local
+    active: dev
 
 # 기본 local
 ---
@@ -14,3 +14,15 @@ elasticsearch:
   port: 9200
   scheme: http
   aliasname: moive_auto_alias
+
+# dev
+---
+spring:
+  profiles: dev
+
+elasticsearch:
+  index: product
+  type: _doc
+  hostname: 127.0.0.1
+  port: 9200
+  scheme: http

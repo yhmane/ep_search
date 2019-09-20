@@ -1,0 +1,106 @@
+-- index create
+PUT product
+{
+    "settings": {
+        "number_of_shards": 5,
+        "number_of_replicas": 1
+    },
+    "mappings": {
+        "_doc": {
+            "properties": {
+                "product_id": {
+                    "type": "keyword"
+                },
+                "hprice": {
+                    "type": "integer"
+                },
+                "image": {
+                    "type": "text"
+                },
+                "link": {
+                    "type": "text"
+                },
+                "lprice": {
+                    "type": "integer"
+                },
+                "mall_name": {
+                    "type": "keyword"
+                },
+                "product_type": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "text"
+                },
+                "pm_no": {
+                    "type": "integer"
+                },
+                "display": {
+                    "type": "integer"
+                },
+                "last_build_date": {
+                    "type": "date",
+                    "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+                },
+                "start": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}
+
+-- documet 테스트 삽입 쿼리
+POST product/_doc/1
+{
+    "product_id": 1,
+    "hprice": 711300,
+    "image": "https://shopping-data-image1",
+    "link": "https://shopping-data-link1",
+    "lprice": 3280,
+    "mall_name": "네이버",
+    "product_type": 1,
+    "title": "뉴트로지나 노르웨이젼 포뮬러 핸드크림",
+    "pm_no": 4,
+    "display": 10,
+    "last_build_date": "2019-09-20 22:10:10",
+    "start": 1,
+    "total": 649307
+}
+
+POST product/_doc/2
+{
+    "product_id": 2,
+    "hprice": 28000,
+    "image": "https://shopping-data-image2",
+    "link": "https://shopping-data-link2",
+    "lprice": 21410,
+    "mall_name": "네이버",
+    "product_type": 1,
+    "title": "록시땅 핸드 크림",
+    "pm_no": 4,
+    "display": 10,
+    "last_build_date": "2019-09-20 22:20:10",
+    "start": 1,
+    "total": 106345
+}
+
+POST product/_doc/3
+{
+    "product_id": 3,
+    "hprice": 42000,
+    "image": "https://shopping-data-image3",
+    "link": "https://shopping-data-link3",
+    "lprice": 29000,
+    "mall_name": "쿠팡",
+    "product_type": 1,
+    "title": "록시땅 시어 버터 핸드 크림",
+    "pm_no": 5,
+    "display": 10,
+    "last_build_date": "2019-09-20 22:30:10",
+    "start": 1,
+    "total": 3497909
+}
