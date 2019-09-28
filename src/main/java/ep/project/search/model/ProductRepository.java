@@ -1,10 +1,8 @@
 package ep.project.search.model;
 
-import org.apache.http.HttpHost;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -29,53 +27,35 @@ public class ProductRepository {
 
     @Value("${elasticsearch.index}")
     private String INDEX_NAME;
+
     @Value("${elasticsearch.type}")
     private String TYPE_NAME;
-    @Value("${elasticsearch.hostname}")
-    private String HOST_NAME;
-    @Value("${elasticsearch.port}")
-    private int PORT;
-    @Value("${elasticsearch.scheme}")
-    private String SCHEME;
 
-    @Autowired
     private RestHighLevelClient restHighLevelClient;
 
-    public ProductRepository(RestHighLevelClient restHighLevelClient) {
-        this.restHighLevelClient = restHighLevelClient;
-    }
-
-    public RestHighLevelClient createConnection() {
-        return new RestHighLevelClient(
-                RestClient.builder(
-                        new HttpHost(HOST_NAME,PORT,SCHEME)
-                )
-        );
+    @Autowired
+    public ProductRepository(RestHighLevelClient client) {
+        this.restHighLevelClient = client;
     }
 
     /**
-     * 검색 결과를 return
-     * 정렬은 우선 낮은가격순으로 함 (추후 수정 예정)
-     * @param type (검색 타입)
-     * @param search (검색어)
+     *
+     * @param type
+     * @param searchValue
      * @return
      * @throws Exception
      */
-    public List<Product> searchProduct(String type, String search) throws Exception {
-
-        RestHighLevelClient client = createConnection();
+    public List<Product> searchProduct(String type, String searchValue) throws Exception {
         SearchRequest request = new SearchRequest(INDEX_NAME)
                 .types(TYPE_NAME)
                 .source(SearchSourceBuilder.searchSource()
-                        .query(QueryBuilders.matchQuery(type, search))
+                        .query(QueryBuilders.matchQuery(type, searchValue))
                         .from(0)
                         .size(5)
                         .sort(new FieldSortBuilder("lprice").order(SortOrder.DESC)));
 
-
-        SearchResponse response = client.search(request, RequestOptions.DEFAULT);;
+        SearchResponse response = restHighLevelClient.search(request, RequestOptions.DEFAULT);;
         SearchHits searchHits = response.getHits();
-        client.close();
 
         return getData(searchHits);
     }
@@ -88,7 +68,7 @@ public class ProductRepository {
             Product product = new Product();
             product.setProductId((Integer) sourceAsMap.get("product_id"));
             product.setTitle((String) sourceAsMap.get("title"));
-//            product.setLastBuildDate((LocalDateTime) sourceAsMap.get("last_build_date"));
+            product.setLastBuildDate((String) sourceAsMap.get("last_build_date"));
             product.setTotal((Integer) sourceAsMap.get("total"));
             product.setStart((Integer) sourceAsMap.get("start"));
             product.setDisplay((Integer) sourceAsMap.get("display"));
