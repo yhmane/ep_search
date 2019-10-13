@@ -41,17 +41,16 @@ public class ProductRestControllerTest {
                 .hprice(711300)
                 .image("https://shopping-data-image1")
                 .link("https://shopping-data-link1")
-                .mallName("mall_name")
+                .mallName("mallName")
                 .title("뉴트로지나 노르웨이젼 포뮬러 핸드크림")
                 .build());
 
-        given(productService.search("mall_name", "네이버")).willReturn(products);
+        given(productService.search("mallName", "네이버")).willReturn(products);
 
         mvc.perform(get("/products/_search")
-                .param("type", "mall_name")
+                .param("type", "mallName")
                 .param("searchValue", "네이버"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("\"title\":\"뉴트로지나 노르웨이젼 포뮬러 핸드크림\"")))
                 .andExpect(content().string(containsString("\"title\":\"뉴트로지나 노르웨이젼 포뮬러 핸드크림\"")));
     }
 }

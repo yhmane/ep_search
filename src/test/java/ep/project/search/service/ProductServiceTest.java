@@ -39,17 +39,17 @@ public class ProductServiceTest {
                 .hprice(711300)
                 .image("https://shopping-data-image1")
                 .link("https://shopping-data-link1")
-                .mallName("mall_name")
+                .mallName("mallName")
                 .title("뉴트로지나 노르웨이젼 포뮬러 핸드크림")
                 .build());
 
-        given(productRepository.searchProduct("mall_name", "네이버")).willReturn(products);
+        given(productRepository.searchProduct("mallName", "네이버")).willReturn(products);
     }
 
     @Test
     public void search() throws Exception {
 
-        List<Product> products = productService.search("mall_name", "네이버");
+        List<Product> products = productService.search("mallName", "네이버");
 
         Product product = products.get(0);
         assertThat(product.getTitle(), is("뉴트로지나 노르웨이젼 포뮬러 핸드크림"));

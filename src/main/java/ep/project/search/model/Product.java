@@ -2,14 +2,12 @@ package ep.project.search.model;
 
 import lombok.*;
 
-import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
  * @author hwang-yunho on 2019. 9. 20.
  * @project search
  */
-@Entity
 @Getter
 @Setter
 @Builder

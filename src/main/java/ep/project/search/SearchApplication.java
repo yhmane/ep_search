@@ -5,9 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class SearchApplication {
-    // TODO MVC 구현            (~9/23)
-    // TODO MOCK DATA 테스트     (~9/25)
-    // TODO 실데이터 모델링 & 매핑   (~9/28)
+    // TODO (멀티모듈로 변환 ~10/20)
+    // TODO (테스트 케이스 추가 ~/10/27)
     public static void main(String[] args) {
         SpringApplication.run(SearchApplication.class, args);
     }
